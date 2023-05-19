@@ -1,0 +1,71 @@
+service: reto-serverless
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+
+functions:
+  lambda-post:
+    handler: lambda-post-dist/index.handler
+  lambda-get:
+    handler: lambda-get-dist/index.handler
+
+resources:
+  Resources:
+    MyApiGateway:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: reto-serverless-api-gateway
+
+    UsersResource:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        RestApiId: !Ref MyApiGateway
+        ParentId: !GetAtt MyApiGateway.RootResourceId
+        PathPart: 'users'
+
+#    CreatePostMethod:
+#      Type: AWS::ApiGateway::Method
+#      Properties:
+#        RestApiId: !Ref MyApiGateway
+#        ResourceId: !GetAtt UsersResource.Arn
+#        HttpMethod: POST
+#        AuthorizationType: NONE
+#        Integration:
+#          Type: AWS_PROXY
+#          IntegrationHttpMethod: POST
+#          Uri: arn:aws:apigateway:${self:provider.region}:lambda:path/2015-03-31/functions/${self:service.lambda-post.arn}/invocations
+
+
+#    HelloGetResource:
+#      Type: AWS::ApiGateway::Resource
+#      Properties:
+#        RestApiId: !Ref MyApiGateway
+#        ParentId: !GetAtt MyApiGateway.RootResourceId
+#        PathPart: 'hello'
+#
+#    MyDynamoDBTable:
+#      Type: AWS::DynamoDB::Table
+#      Properties:
+#        TableName: my-table
+#        AttributeDefinitions:
+#          - AttributeName: id
+#            AttributeType: S
+#        KeySchema:
+#          - AttributeName: id
+#            KeyType: HASH
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 5
+#          WriteCapacityUnits: 5
+
+#outputs:
+#  ApiGatewayId:
+#    Value: !Ref MyApiGateway
+#  HelloPostArn:
+#    Value: !GetAtt helloPost.Arn
+#  HelloGetArn:
+#    Value: !GetAtt helloGet.Arn
+#  DynamoDBTableName:
+#    Value: my-table

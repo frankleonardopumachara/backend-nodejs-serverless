@@ -2,23 +2,29 @@
   "name": "reto-tecnico-backend-esbuild",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:lambda-get": "rm -rf dist && esbuild lambda-get/*/*.ts lambda-get/*.ts  --outdir=lambda-get-dist && cp package*.json lambda-get-dist && cd lambda-get-dist && npm ci --omit=dev && cd .. && clean-modules --yes --directory lambda-get-dist/node_modules",
-    "build:lambda-post": "rm -rf dist && esbuild lambda-post/*/*.ts lambda-post/*.ts --format=cjs --platform=node --target=node18.15.0 --outdir=lambda-post-dist && cp package*.json lambda-post-dist && cd lambda-post-dist && npm ci --omit=dev && cd .. && clean-modules --yes --directory lambda-post-dist/node_modules",
-    "build": "npm run build:lambda-get && npm run build:lambda-post"
+    "build:lambda-get": "rm -rf dist && esbuild lambda-get/*/*.ts lambda-get/*/*/**.ts lambda-get/*.ts --format=cjs --platform=node --target=node18.15.0 --outdir=lambda-get-dist && cp package*.json lambda-get-dist && cd lambda-get-dist && npm ci --omit=dev && cd .. && clean-modules --yes --directory lambda-get-dist/node_modules",
+    "build:lambda-post": "rm -rf dist && esbuild lambda-post/*/*.ts lambda-post/*/*/**.ts lambda-post/*.ts --format=cjs --platform=node --target=node18.15.0 --outdir=lambda-post-dist && cp package*.json lambda-post-dist && cd lambda-post-dist && npm ci --omit=dev && cd .. && clean-modules --yes --directory lambda-post-dist/node_modules",
+    "build": "npm run build:lambda-get && npm run build:lambda-post",
+    "start": "npm run build && sls offline",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
-  "author": "",
+  "author": "FLPC",
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.335.0",
-    "axios": "^1.4.0",
     "typescript-result": "^1.2.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.115",
+    "@types/jest": "^29.5.1",
     "@types/node": "^20.2.1",
+    "@types/supertest": "^2.0.12",
     "@types/uuid": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
@@ -30,7 +36,31 @@
     "jest": "^29.5.0",
     "prettier": "^2.8.8",
     "serverless": "^3.31.0",
+    "serverless-offline": "^12.0.4",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": ".",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "lambda-get/**/*.(t|j)s",
+      "lambda-post/**/*.(t|j)s"
+    ],
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/"
+    ]
   }
 }

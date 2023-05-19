@@ -1,30 +1,55 @@
 service: reto-serverless
 frameworkVersion: '3'
+useDotenv: true
+
+plugins:
+  - serverless-offline
 
 provider:
   name: aws
   runtime: nodejs18.x
   region: us-east-1
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - "dynamodb:*"
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/*"
+  environment:
+    SWAPI_URL: ${env:SWAPI_URL}
 
 functions:
   lambda-post:
     handler: lambda-post-dist/index.handler
+    events:
+      - http:
+          path: /users
+          method: post
   lambda-get:
     handler: lambda-get-dist/index.handler
+    events:
+      - http:
+          path: /users
+          method: get
+      - http:
+          path: /users/{userId}
+          method: get
+      - http:
+          path: /planets/{planetId}
+          method: get
 
-resources:
-  Resources:
-    MyApiGateway:
-      Type: AWS::ApiGateway::RestApi
-      Properties:
-        Name: reto-serverless-api-gateway
-
-    UsersResource:
-      Type: AWS::ApiGateway::Resource
-      Properties:
-        RestApiId: !Ref MyApiGateway
-        ParentId: !GetAtt MyApiGateway.RootResourceId
-        PathPart: 'users'
+#resources:
+#  Resources:
+#    MyApiGateway:
+#      Type: AWS::ApiGateway::RestApi
+#      Properties:
+#        Name: reto-serverless-api-gateway
+#
+#    UsersResource:
+#      Type: AWS::ApiGateway::Resource
+#      Properties:
+#        RestApiId: !Ref MyApiGateway
+#        ParentId: !GetAtt MyApiGateway.RootResourceId
+#        PathPart: 'users'
 
 #    CreatePostMethod:
 #      Type: AWS::ApiGateway::Method

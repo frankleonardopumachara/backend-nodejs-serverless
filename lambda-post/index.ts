@@ -1,21 +1,28 @@
 import {createUser} from './services/create-user'
-import {SuccessUserSave} from './domain/symbols'
+import {Response} from './utils'
+import {Callback, Context} from 'aws-lambda'
 
-export async function handler(event, context, callback) {
-	console.log('event', event)
-	console.log('context', context)
-	console.log('callback', callback)
-	const result = await createUser(event)
+export async function handler(event: any, context: Context, callback: Callback) {
+	const newUser = JSON.parse(event.body)
+	const result = await createUser(newUser)
 
-	const success = result.isSuccess()
-	const data: SuccessUserSave | null = result.getOrNull()
-	const error: Error | null = result.errorOrNull()
-
-	const response = {
-		statusCode: 200,
-		success,
-		data,
-		error,
+	if (result.isSuccess()) {
+		return new Response()
+		.status(200)
+		.body({
+			success: true,
+			data: result.value,
+			error: null
+		})
+		.get()
+	} else {
+		return new Response()
+		.status(500)
+		.body({
+			success: false,
+			data: null,
+			error: result.error
+		})
+		.get()
 	}
-	callback(null, response)
 }

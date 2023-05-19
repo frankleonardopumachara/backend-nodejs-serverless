@@ -45,6 +45,8 @@ export interface PlanetResponseEs {
 
 export class PlanetLanguageAdapter {
 	static toSpanish(param: PlanetResponseEn): PlanetResponseEs {
+		console.log('type of', typeof param)
+		console.log('param', param.climate)
 		return {
 			clima: param.climate,
 			creadoEn: param.created,

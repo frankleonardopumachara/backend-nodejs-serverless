@@ -3,7 +3,10 @@
 La estructura del proyecto consiste en lambda-get y lambda-post que representan
 las funciones a invocar por el api gateway, cada una tiene sus respectivas depencias.
 
-- La estructura de cada funcion es de la siguiente forma (por eje lambda-get):
+Se utilizar DynamonDB como base de datos y el modelo que se ejigio es User y tiene los 
+campos: id, nombre, correo
+
+### La estructura de cada funcion es de la siguiente forma (por eje lambda-get):
 - col-init: dependencias que se inicializaran en la etapa de cold start
 - domain: contiene los errores de negocio y tipado
 - services: contienes las funciones de negocio
@@ -49,6 +52,8 @@ se tiene los endpoints:
 - GET planets/{planetId}, donde planetId es un numero entero
 
 ## Ejecucion de los tests
+Para ejecutar las pruebas unitarias se utiliza la libreria JestJs,
+podra encontrar algunos archivos con extension *.spec.ts que representan los tests unitarios
 
 ```bash
 # Ejecutar test unitarios

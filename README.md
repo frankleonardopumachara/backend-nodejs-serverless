@@ -61,5 +61,4 @@ $ npm run test
 
 # Obtener la cobertura de tests
 $ npm run test:cov
-
 ```

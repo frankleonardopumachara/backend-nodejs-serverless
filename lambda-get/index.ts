@@ -63,7 +63,6 @@ export const handleGetPlanetById = async (planetId: number) => {
 		.get()
 	}
 }
-
 export async function handler(event, context, callback) {
 	const params: null | Record<string, any> = event.pathParameters
 	if (params && params.userId) {
